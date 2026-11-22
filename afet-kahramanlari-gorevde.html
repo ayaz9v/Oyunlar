@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Afet Kahramanları Görevde!</title>
+<style>
+:root{--fs:18px;--lh:1.5;--bg:#e8edfb;--fg:#14213d;--cd:#fff;--ac:#c2410c;--on:#fff;--ok:#16794a;--bad:#b3261e;--bd:#14213d;--sun:#ffd166;--rkb:#fde4e1;--sfb:#dff5e8}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:var(--fs)/var(--lh) "Trebuchet MS",Verdana,system-ui,sans-serif}
+header{background:var(--ac);color:var(--on);padding:.6rem 1rem}
+h1{margin:0;font-size:1.5em}
+#live,main{max-width:900px;margin:0 auto;padding:0 1rem}
+#live{min-height:3.2em;padding-top:.5rem;font-weight:700}
+#live.ok{color:var(--ok)}#live.bad{color:var(--bad)}
+main{padding-bottom:3rem}
+button{overflow-wrap:anywhere;max-width:100%;font:inherit;min-height:48px;padding:.4rem .9rem;border:3px solid var(--bd);border-radius:14px;background:var(--cd);color:var(--fg);cursor:pointer}
+button:hover:not(:disabled){background:var(--sun);color:#000}
+button:disabled{opacity:.6;cursor:default}
+:focus-visible{outline:4px solid var(--bad);outline-offset:2px}
+.pri{background:var(--ac);color:var(--on);font-weight:700}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(9em,100%),1fr));gap:.7rem;margin:.8rem 0}
+.card{display:flex;flex-direction:column;align-items:center;gap:.2rem;padding:.8rem;text-align:center}
+.em{font-size:2.4em;line-height:1.1}
+.box{background:var(--cd);border:3px solid var(--bd);border-radius:16px;padding:.8rem 1rem;margin:.8rem 0}
+.big{text-align:center}
+.st{font-size:2.4em;letter-spacing:.15em}
+.pr{margin:.4rem 0}
+.hz:disabled{opacity:1}
+.hz small{display:block;font-size:.8em}
+.hz.rk,li.no{border-color:var(--bad);background:var(--rkb)}
+.hz.sf,li.yes{border-color:var(--ok);background:var(--sfb)}
+.nm{display:flex;flex-wrap:wrap;gap:.8rem}
+.nm label{display:flex;flex-direction:column;flex:1 1 10em;min-width:0}
+.nm input{width:100%}
+input{max-width:100%;font:inherit;min-height:48px;padding:.3rem .6rem;border:3px solid var(--bd);border-radius:10px;background:var(--cd);color:var(--fg)}
+ol{list-style:none;padding:0}
+li{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;justify-content:space-between;background:var(--cd);border:3px solid var(--bd);border-radius:14px;padding:.5rem .8rem;margin:.5rem 0}
+li.un .tx{text-decoration:line-through}
+.tx{flex:1 1 14em}
+.ctl{display:flex;gap:.4rem;flex-wrap:wrap}
+body.hy{--bg:#000;--fg:#ffe600;--cd:#000;--ac:#ffe600;--on:#000;--ok:#7dff7d;--bad:#ff9a9a;--bd:#ffe600;--sun:#fff;--rkb:#4a0000;--sfb:#003a14}
+body.hw{--bg:#000;--fg:#fff;--cd:#000;--ac:#ffe600;--on:#000;--ok:#7dff7d;--bad:#ff9a9a;--bd:#fff;--sun:#ffe600;--rkb:#4a0000;--sfb:#003a14}
+.ax,.nav{max-width:900px;margin:0 auto;padding:0 1rem}
+summary{font-weight:700;padding:.7rem 0;min-height:48px;cursor:pointer}
+.tb{display:flex;flex-wrap:wrap;gap:.5rem;align-items:flex-end;padding:.3rem 0}
+.tb label{display:flex;flex-direction:column;gap:.1rem}
+input[type=range]{width:min(70vw,15em);height:2em;accent-color:var(--ac)}
+.sm{margin:.3rem 0;font-size:.85em}
+.arm{outline:5px dashed var(--bad);outline-offset:3px}
+#live.fl{animation:fl .8s}
+@keyframes fl{from{background:var(--sun);color:#000}to{background:transparent}}
+@media (prefers-reduced-motion:reduce){#live.fl{animation:none}}
+body.xl .cols{grid-template-columns:1fr}
+h1,h2,h3{overflow-wrap:anywhere}
+body.xl h1{font-size:1.15em}
+
+</style>
+</head>
+<body>
+<header><h1>🦸 Afet Kahramanları Görevde!</h1></header>
+<details class="ax"><summary>♿ Erişilebilirlik ve ses ayarları</summary>
+<div class="tb" role="group" aria-label="Erişilebilirlik ayarları">
+<button data-x="tv" aria-pressed="true">🔊 Sesli okuma: Açık</button>
+<button data-x="nr" aria-pressed="false">🗣️ Seçenek seslendirme: Kapalı</button>
+<button data-x="rt">⏱ Konuşma hızı: Normal</button>
+<button data-x="th">🎨 Renk teması: Standart</button>
+<label for="rf">Yazı boyutu: <b id="fv"></b><input type="range" id="rf" min="16" max="40" step="1" value="18"></label>
+<label for="rl">Satır aralığı: <b id="lv"></b><input type="range" id="rl" min="1.3" max="2.6" step="0.1" value="1.5"></label>
+<button data-x="rs">↺ Ayarları sıfırla</button>
+</div>
+<p id="vn" class="sm"></p>
+<p class="sm">Seçenek seslendirme açıkken bir seçeneğe bir kez dokun: sesli okunur. Seçmek için aynı seçeneğe bir kez daha dokun. Klavyede seçeneğe gelince okunur, Enter seçer.</p>
+</details>
+<div class="nav"><button data-a="home">🏠 Başa dön</button></div>
+
+<div id="live" role="status" aria-live="polite"></div>
+<main id="app"></main>
+<script>const $=s=>document.querySelector(s),live=$('#live');
+const tts='speechSynthesis' in window&&'SpeechSynthesisUtterance' in window;
+const DEF={tv:1,nr:0,rt:1,th:0,fs:18,lh:1.5},AX=Object.assign({},DEF);
+try{Object.assign(AX,JSON.parse(localStorage.getItem('afetErisim')||'{}'))}catch(e){}
+const sv=()=>{try{localStorage.setItem('afetErisim',JSON.stringify(AX))}catch(e){}};
+const RT=[['Yavaş',.7],['Normal',.9],['Hızlı',1.1]],TH=['Standart','Siyah zemin · sarı yazı','Siyah zemin · beyaz yazı'];
+let voice=null,armed=null,kb=false;
+const clean=t=>t.replace(/[\p{Extended_Pictographic}\u200d\ufe0f✓✔▶▲▼↻◐]/gu,' ').replace(/\s+/g,' ').trim();
+function pickV(){const v=speechSynthesis.getVoices();voice=v.find(x=>/^tr/i.test(x.lang))||null;$('#vn').textContent=v.length&&!voice?'Bu cihazda Türkçe ses bulunamadı. Yazıları ekrandan okuyabilirsin.':''}
+function say(t,force){if(!tts||(!AX.tv&&!force))return;t=clean(t);if(!t)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='tr-TR';if(voice)u.voice=voice;u.rate=RT[AX.rt][1];speechSynthesis.speak(u)}
+function fb(t,c){live.textContent=t;live.className=c||'';if(!t)return;void live.offsetWidth;live.classList.add('fl');say(t);if(navigator.vibrate)navigator.vibrate(c=='bad'?[120,70,120]:70)}
+function ap(){const r=document.documentElement.style;r.setProperty('--fs',AX.fs+'px');r.setProperty('--lh',AX.lh);
+document.body.className=['','hy','hw'][AX.th]+(AX.fs>=26?' xl':'');
+const t=(k,v)=>{$(`[data-x=${k}]`).textContent=v};
+t('tv','🔊 Sesli okuma: '+(AX.tv?'Açık':'Kapalı'));t('nr','🗣️ Seçenek seslendirme: '+(AX.nr?'Açık':'Kapalı'));
+t('rt','⏱ Konuşma hızı: '+RT[AX.rt][0]);t('th','🎨 Renk teması: '+TH[AX.th]);
+$('[data-x=tv]').setAttribute('aria-pressed',!!AX.tv);$('[data-x=nr]').setAttribute('aria-pressed',!!AX.nr);
+$('#rf').value=AX.fs;$('#rl').value=AX.lh;$('#fv').textContent=AX.fs+' punto';$('#lv').textContent=AX.lh}
+$('.tb').addEventListener('click',e=>{const b=e.target.closest('[data-x]');if(!b)return;const k=b.dataset.x;
+if(k=='tv'||k=='nr')AX[k]=+!AX[k];if(k=='rt')AX.rt=(AX.rt+1)%3;if(k=='th')AX.th=(AX.th+1)%3;if(k=='rs')Object.assign(AX,DEF);
+ap();sv();if(tts)say(b.textContent,true)});
+$('#rf').oninput=e=>{AX.fs=+e.target.value;ap();sv()};
+$('#rl').oninput=e=>{AX.lh=+e.target.value;ap();sv()};
+if(tts){pickV();speechSynthesis.onvoiceschanged=pickV}else{['tv','nr','rt'].forEach(k=>$(`[data-x=${k}]`).hidden=true);$('#vn').textContent='Bu tarayıcı sesli okumayı desteklemiyor. Yazıları ekrandan okuyabilirsin.'}
+const lab=b=>clean([b.getAttribute('aria-label')||'',...[...b.querySelectorAll('[aria-label]')].map(x=>x.getAttribute('aria-label')),b.textContent].join(' '));
+document.addEventListener('keydown',()=>kb=true,true);
+document.addEventListener('pointerdown',()=>kb=false,true);
+document.addEventListener('focusin',e=>{const b=e.target.closest&&e.target.closest('#app [data-a]');if(AX.nr&&kb&&b)say(lab(b),true)});
+document.addEventListener('click',e=>{const b=e.target.closest('#app [data-a]');if(!AX.nr||!b||b.disabled||e.detail===0)return;
+if(armed===b){armed=null;b.classList.remove('arm');return}
+document.querySelectorAll('.arm').forEach(x=>x.classList.remove('arm'));armed=b;b.classList.add('arm');e.stopPropagation();
+say(lab(b),true);live.textContent='Seçmek için aynı seçeneğe bir kez daha dokun.';live.className=''},true);
+ap();
+</script>
+<script>
+const SC=[
+{n:'Deprem: sınıfta',e:'🏫',s:'Ders sırasında yer birden sallanmaya başladı! Sınıfta seni tehlikeye sokabilecek riskleri bul.',
+h:[['💡','Tavandan sarkan lamba',1,'Sallanınca düşüp yaralayabilir.'],['📚','Sabitlenmemiş kitaplık',1,'Üstüne devrilebilir.'],['🪟','Büyük cam pencere',1,'Cam kırılıp etrafa saçılabilir.'],['🎒','Çıkış yoluna bırakılmış çantalar',1,'Kaçış yolunu kapatır, takılıp düşebilirsin.'],['🪑','Sağlam sıra',0,'Altına girip korunmak için kullanılır.'],['🚪','Acil çıkış levhası',0,'Çıkış yolunu gösterir.'],['👩‍🏫','Öğretmen',0,'Sana güvenli yolu gösterir.']],
+st:[['ÇÖK: Hemen yere çök.','Ayakta kalırsan sallantıda düşebilirsin.'],['KAPAN: Başını ve boynunu kollarınla koru, sağlam sıranın altına gir.','Düşen eşyalar en çok başa zarar verir.'],['TUTUN: Sıranın ayağına tutun, sallantı bitene kadar bekle.','Sıra kayarsa korunmasız kalmazsın.'],['Sallantı bitince öğretmeninin yönergesiyle koşmadan sırayla sınıftan çık.','Telaşla koşmak itişip düşmene yol açar.'],['Toplanma alanına git ve yoklamada yerini al.','Herkesin güvende olduğu böyle anlaşılır.']],
+tr:[['Asansöre binip hızla aşağı in.','Deprem sırasında asansör sıkışabilir; merdiven kullanılır.'],['Cama koşup dışarı bak.','Cam kırılabilir; camdan uzak durulur.']]},
+{n:'Yangın: evde',e:'🏠',s:'Mutfaktan duman geliyor ve alarm çalıyor! Evde yangına neden olabilecek riskleri bul.',
+h:[['🍳','Ocakta unutulmuş tava',1,'Yağ tutuşup yangını başlatabilir.'],['🔌','Çok fişli, aşırı yüklenmiş priz',1,'Aşırı ısınıp yangın çıkarabilir.'],['🕯️','Perdenin yanındaki mum',1,'Perde tutuşabilir.'],['📦','Kapının önündeki kutular',1,'Kaçış yolunu kapatır.'],['🔔','Duman alarmı',0,'Yangını erken haber verir.'],['🚪','Açılabilen çıkış kapısı',0,'Güvenle dışarı çıkmanı sağlar.'],['🧯','Yangın söndürücü',0,'Onu yetişkinler kullanır, risk değildir.']],
+st:[['Yangını fark edince “Yangın var!” diye bağırıp yetişkinlere haber ver.','Herkes durumdan haberdar olur ve hızlı hareket eder.'],['Eşyalarını bırak, duman varsa eğilerek kapıya ilerle.','Duman yukarıda toplanır; yere yakın hava daha temizdir.'],['Çıkarken arkandan kapıyı kapat.','Kapalı kapı alev ve dumanın yayılmasını yavaşlatır.'],['Binadan çık ve güvenli bir yerde bekle.','Dışarıdaki güvenli yer seni dumandan korur.'],['Dışarıda yetişkinle birlikte 112 acil çağrı hattını ara; içeri geri dönme.','Ekipler adresi bilirse en hızlı yardım gelir.']],
+tr:[['Dolabın içine saklan.','Saklanırsan ekipler seni bulamayabilir, duman seni etkiler.'],['Oyuncaklarımı kurtarmak için eve geri gir.','Eşyalardan çok daha değerli olan şey senin hayatındır.']]},
+{n:'Sel: evin yakınında',e:'🌧️',s:'Saatlerdir şiddetli yağmur yağıyor. Dere taşmak üzere ve sokaklara su doluyor. Çevredeki riskleri bul.',
+h:[['🌊','Taşmak üzere olan dere',1,'Su hızla yükselip seni sürükleyebilir.'],['🚗','Su dolu yoldan geçmeye çalışan araç',1,'Sel suyu sanılandan güçlüdür, araç sürüklenebilir.'],['⚡','Suya değen elektrik kablosu',1,'Elektrik çarpması çok tehlikelidir.'],['🕳️','Suyun altında kalan rögar kapağı',1,'Kapak açıksa görünmeden içine düşebilirsin.'],['⛰️','Yüksek ve sağlam tepe',0,'Su oraya ulaşmaz, güvenli yerdir.'],['🎒','Hazır afet çantası',0,'İçinde su, fener, ilk yardım malzemesi bulunur.'],['📻','Pilli radyo',0,'Resmî uyarıları dinlemeni sağlar.']],
+st:[['Dereden ve su dolu yoldan hemen uzaklaş.','Su çok hızlı yükselebilir.'],['Yüksek ve sağlam bir yere çık.','Su aşağıya birikir; yüksek yer daha güvenlidir.'],['Hazır afet çantanı yanına al.','İçindeki su, fener ve ilk yardım malzemesi işine yarar.'],['Yetişkinlerle 112 acil çağrı hattını ara ve yüksek yerde bekle.','Ekipler nerede olduğunu bilirse sana ulaşabilir.'],['Yetkililer “güvenli” diyene kadar eve dönme.','Su çekilse bile yol, zemin ve elektrik tehlikeli olabilir.']],
+tr:[['Sel suyunun içinden yürüyerek karşıya geç.','Su seni ayağından kaldırıp sürükleyebilir.'],['Su dolan bodruma eşya kurtarmaya in.','Bodrum çok hızlı su ile dolabilir.']]}];
+const LV={1:['Seviye 1 · Çırak Kahraman','4 güvenli adım; risk sayısı gösterilir'],2:['Seviye 2 · Usta Kahraman','5 güvenli adım; risk sayısı gösterilir'],3:['Seviye 3 · Süper Kahraman','5 adım + güvensiz “tuzak” davranışlar; risk sayısı gizli']};
+const sh=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const esc=s=>s.replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
+const app=$('#app');
+let L=1,sw=0,P=['Enes','Ebubekir'],si=0,err=0,found=new Set(),list=[],steps=[],traps=[];
+const R=i=>P[(i+sw)%2],N=i=>esc(R(i)),tot=()=>SC[si].h.filter(x=>x[2]).length;
+function view(t,sub,b){app.innerHTML=`<p class="pr">${sub}</p><h2 id="h" tabindex="-1">${t}</h2>${b}`;fb('');$('#h').focus();window.scrollTo(0,0)}
+function home(){if(tts)speechSynthesis.cancel();app.innerHTML=`<h2 id="h" tabindex="-1">Görev takımını kur</h2><div class="box"><p>Bu oyunda şık işaretlenmez. Bir olayın içindeki <b>riskleri fark eder</b>, sonra <b>güvenli davranışları doğru sıraya dizersiniz</b>. Biri risk dedektifi, diğeri sıralama kaptanı olur; her görevde roller değişir.</p><div class="nm"><label>1. kahraman<input id="p0" value="Enes" maxlength="20"></label><label>2. kahraman<input id="p1" value="Ebubekir" maxlength="20"></label></div></div><div class="g">${[1,2,3].map(l=>`<button class="card pri" data-a="start" data-l="${l}"><b>${LV[l][0]}</b><span>${LV[l][1]}</span></button>`).join('')}</div>`;fb('');$('#h').focus()}
+function cnt(){$('#cnt').textContent='Bulunan risk: '+found.size+(L<3?' / '+tot():'')}
+function risk(){const c=SC[si];found=new Set();
+view(`${c.e} ${c.n}`,`Görev ${si+1}/${SC.length} · Sıra: <b>${N(si)}</b> · Risk Dedektifi 🔍`,`<div class="box"><p>${c.s}</p><button data-a="tell">🔊 Olayı dinle</button></div><p id="cnt" class="pr"></p><div class="g" id="hg">${sh(c.h.map((x,i)=>i)).map(i=>{const x=c.h[i];return`<button class="card hz" data-a="hz" data-i="${i}"><span class="em" aria-hidden="true">${x[0]}</span><b>${x[1]}</b><small></small></button>`}).join('')}</div><button class="pri" id="d1" data-a="d1">Hepsini buldum ✓</button>`);cnt();say(c.s)}
+function rl(){let k=0;$('#ol').innerHTML=list.map((x,i)=>`<li class="${x.m||''}"><span class="tx">${x.f?'🚫':++k+'.'} ${x.x}</span><span class="ctl"><button data-a="mv" data-i="${i}" data-d="-1" aria-label="Yukarı taşı: ${x.x}"${i?'':' disabled'}>▲</button><button data-a="mv" data-i="${i}" data-d="1" aria-label="Aşağı taşı: ${x.x}"${i<list.length-1?'':' disabled'}>▼</button>${L==3?`<button data-a="un" data-i="${i}" aria-label="${x.f?'Güvensiz işaretini kaldır':'Güvensiz olarak işaretle'}: ${x.x}">🚫 ${x.f?'Güvensiz':'Güvensiz mi?'}</button>`:''}</span></li>`).join('')}
+function ord(){const c=SC[si],n=L==1?4:5;steps=c.st.slice(0,n).map((x,i)=>({x:x[0],w:x[1],o:i}));traps=L==3?c.tr.map(x=>({x:x[0],w:x[1],tr:1})):[];const p=steps.concat(traps);do{list=sh(p)}while(list.every((x,i)=>x.o===i));
+view('Güvenli davranışları sırala',`Görev ${si+1}/${SC.length} · Sıra: <b>${N(si+1)}</b> · Sıralama Kaptanı 📋`,`<div class="box"><p>${c.s}</p><p><b>Görev:</b> Güvenli davranışları <b>ilk yapılacaktan sonuncuya</b> doğru sırala. ▲ ▼ düğmeleriyle yerlerini değiştir.${L==3?' Güvensiz davranışları 🚫 ile işaretle.':''}</p></div><ol id="ol" role="list"></ol><button class="pri" id="ck" data-a="chk">Kontrol et ✓</button>`);rl();say('Güvenli davranışları sırala.')}
+function end(){const s=err<=2?3:err<=6?2:1;if(tts)speechSynthesis.cancel();app.innerHTML=`<h2 id="h" tabindex="-1">Görev tamamlandı!</h2><div class="box big"><div class="st" role="img" aria-label="${s} yıldız">${'⭐'.repeat(s)}${'☆'.repeat(3-s)}</div><h3>🏅 Afet Kahramanları: ${esc(P[0])} ve ${esc(P[1])}</h3><p>3 görevde riskleri buldunuz ve güvenli davranışları doğru sıraya dizdiniz. Toplam ${err} hata yaptınız.</p><p>${s==3?'Mükemmel bir takım!':'Hataların nedenlerini konuşup tekrar oynayın, yıldızınızı artırın.'}</p></div><button class="pri" data-a="start" data-l="${L}" data-sw="${1-sw}">↻ Rolleri değiştirip oyna</button> <button data-a="start" data-l="${L}" data-sw="${sw}">Aynı rollerle tekrar</button> <button data-a="home">Seviye seç</button>`;fb('');$('#h').focus();say(`Tebrikler ${P[0]} ve ${P[1]}! ${s} yıldız kazandınız.`)}
+const A={
+home,ord,
+start:b=>{if($('#p0'))P=[0,1].map(i=>$('#p'+i).value.trim()||'Kahraman '+(i+1));L=+b.dataset.l;sw=+(b.dataset.sw||0);err=0;si=0;risk()},
+tell:()=>say(SC[si].s,true),
+hz:b=>{if(b.dataset.d)return;b.dataset.d=1;const x=SC[si].h[+b.dataset.i];b.classList.add(x[2]?'rk':'sf');b.querySelector('small').textContent=(x[2]?'⚠ Risk! ':'✓ Risk değil. ')+x[3];
+if(x[2])found.add(+b.dataset.i);else err++;cnt();fb((x[2]?'Risk buldun! ':'Bu bir risk değil. ')+x[1]+'. '+x[3],x[2]?'ok':'bad')},
+d1:b=>{if(found.size<tot()){err++;fb(L<3?`Henüz ${tot()-found.size} risk daha var. Dikkatle bak!`:'Bazı riskleri kaçırdın. Resme tekrar bak!','bad');return}
+b.disabled=true;document.querySelectorAll('#hg button').forEach(x=>x.disabled=true);fb('Tüm riskleri buldun!','ok');
+app.insertAdjacentHTML('beforeend',`<div class="box">🗣️ <b>Konuş:</b> ${N(si)}, bulduğun bir riskin neden tehlikeli olduğunu takım arkadaşına anlat. Sonra sıra ${N(si+1)} kahramanda: güvenli davranışları sıralayacak.</div><button class="pri" id="nx" data-a="ord">Sıralama görevine geç ▶</button>`);$('#nx').focus()},
+mv:b=>{const i=+b.dataset.i,j=i+ +b.dataset.d;[list[i],list[j]]=[list[j],list[i]];list.forEach(x=>x.m='');rl();
+const li=`#ol li:nth-child(${j+1}) `,t=$(li+`[data-a=mv][data-d="${b.dataset.d}"]`);(t&&!t.disabled?t:$(li+'[data-a=mv]:not(:disabled)')).focus();live.textContent=`Şimdi ${j+1}. sırada.`},
+un:b=>{const i=+b.dataset.i;list[i].f=!list[i].f;list.forEach(x=>x.m='');rl();$(`#ol li:nth-child(${i+1}) [data-a=un]`).focus();live.textContent=list[i].f?'Güvensiz olarak işaretlendi.':'İşaret kaldırıldı.'},
+chk:()=>{const seq=list.filter(x=>!x.f&&!x.tr);let bad=0;
+list.forEach(x=>{const w=x.tr?!x.f:(x.f||seq.indexOf(x)!=x.o);x.m=w?'no':'yes';bad+=w});rl();
+if(bad){err++;fb(`${list.length-bad}/${list.length} doğru. Kırmızı çerçeveliler hatalı. Nedenlerini düşünüp tekrar dene.`,'bad');return}
+$('#ck').remove();
+$('#ol').innerHTML=steps.map((x,i)=>`<li class="yes"><span class="tx">${i+1}. ${x.x}<br><small>Neden? ${x.w}</small></span></li>`).join('')+traps.map(x=>`<li class="yes"><span class="tx">🚫 ${x.x}<br><small>Neden güvensiz? ${x.w}</small></span></li>`).join('');
+fb('Doğru sıra! Nedenleri okuyabilirsin.','ok');
+app.insertAdjacentHTML('beforeend',`<div class="box">🗣️ <b>Konuş:</b> ${N(si+1)}, bir adımın nedenini kendi cümlelerinle açıkla.</div><button data-a="why">🔊 Nedenleri dinle</button> <button class="pri" id="nx" data-a="nxt">${si<SC.length-1?'Sonraki görev ▶':'Sonucu gör ▶'}</button>`);$('#nx').focus()},
+why:()=>say(steps.map((x,i)=>`${i+1}. ${x.x} Neden? ${x.w}`).join(' '),true),
+nxt:()=>{si++;si<SC.length?risk():end()}};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(b&&!b.disabled)A[b.dataset.a](b)});
+home();
+</script>
+</body>
+</html>

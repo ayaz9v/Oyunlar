@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Afetleri Tanıyorum</title>
+<style>
+:root{--fs:18px;--lh:1.5;--bg:#e6f4f1;--fg:#12343b;--cd:#fff;--ac:#0b6e78;--on:#fff;--ok:#16794a;--bad:#b3261e;--bd:#12343b;--sun:#ffc93c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:var(--fs)/var(--lh) "Trebuchet MS",Verdana,system-ui,sans-serif}
+header{background:var(--ac);color:var(--on);padding:.6rem 1rem}
+h1{margin:0;font-size:1.5em}
+#live,main{max-width:900px;margin:0 auto;padding:0 1rem}
+#live{min-height:3.2em;padding-top:.5rem;font-weight:700}
+#live.ok{color:var(--ok)}#live.bad{color:var(--bad)}
+main{padding-bottom:3rem}
+button{overflow-wrap:anywhere;max-width:100%;font:inherit;min-height:48px;padding:.4rem .9rem;border:3px solid var(--bd);border-radius:14px;background:var(--cd);color:var(--fg);cursor:pointer}
+button:hover:not(:disabled){background:var(--sun);color:#000}
+button:disabled{opacity:.6;cursor:default}
+:focus-visible{outline:4px solid var(--bad);outline-offset:2px}
+.pri{background:var(--ac);color:var(--on);font-weight:700}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.7rem;margin:.8rem 0}
+.card{display:flex;flex-direction:column;align-items:center;gap:.2rem;padding:.8rem}
+.em{font-size:2.6em;line-height:1.1}
+.det{background:var(--cd);border:3px solid var(--bd);border-radius:16px;padding:.8rem 1rem;margin:.8rem 0}
+.big{text-align:center}.big .em{font-size:4.5em}
+.st{font-size:2.4em;letter-spacing:.15em}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.cols>div{display:flex;flex-direction:column;gap:.6rem}
+.cols button{width:100%;text-align:left}
+.on{background:var(--sun)!important;color:#000!important}
+.dn{border-color:var(--ok)!important;opacity:1!important}
+.dn::before{content:"✓ ";color:var(--ok);font-weight:700}
+body.hy{--bg:#000;--fg:#ffe600;--cd:#000;--ac:#ffe600;--on:#000;--ok:#7dff7d;--bad:#ff9a9a;--bd:#ffe600;--sun:#fff;--rkb:#4a0000;--sfb:#003a14}
+body.hw{--bg:#000;--fg:#fff;--cd:#000;--ac:#ffe600;--on:#000;--ok:#7dff7d;--bad:#ff9a9a;--bd:#fff;--sun:#ffe600;--rkb:#4a0000;--sfb:#003a14}
+.ax,.nav{max-width:900px;margin:0 auto;padding:0 1rem}
+summary{font-weight:700;padding:.7rem 0;min-height:48px;cursor:pointer}
+.tb{display:flex;flex-wrap:wrap;gap:.5rem;align-items:flex-end;padding:.3rem 0}
+.tb label{display:flex;flex-direction:column;gap:.1rem}
+input[type=range]{width:min(70vw,15em);height:2em;accent-color:var(--ac)}
+.sm{margin:.3rem 0;font-size:.85em}
+.arm{outline:5px dashed var(--bad);outline-offset:3px}
+#live.fl{animation:fl .8s}
+@keyframes fl{from{background:var(--sun);color:#000}to{background:transparent}}
+@media (prefers-reduced-motion:reduce){#live.fl{animation:none}}
+body.xl .cols{grid-template-columns:1fr}
+h1,h2,h3{overflow-wrap:anywhere}
+body.xl h1{font-size:1.15em}
+
+</style>
+</head>
+<body>
+<header><h1>🌍 Afetleri Tanıyorum</h1></header>
+<details class="ax"><summary>♿ Erişilebilirlik ve ses ayarları</summary>
+<div class="tb" role="group" aria-label="Erişilebilirlik ayarları">
+<button data-x="tv" aria-pressed="true">🔊 Sesli okuma: Açık</button>
+<button data-x="nr" aria-pressed="false">🗣️ Seçenek seslendirme: Kapalı</button>
+<button data-x="rt">⏱ Konuşma hızı: Normal</button>
+<button data-x="th">🎨 Renk teması: Standart</button>
+<label for="rf">Yazı boyutu: <b id="fv"></b><input type="range" id="rf" min="16" max="40" step="1" value="18"></label>
+<label for="rl">Satır aralığı: <b id="lv"></b><input type="range" id="rl" min="1.3" max="2.6" step="0.1" value="1.5"></label>
+<button data-x="rs">↺ Ayarları sıfırla</button>
+</div>
+<p id="vn" class="sm"></p>
+<p class="sm">Seçenek seslendirme açıkken bir seçeneğe bir kez dokun: sesli okunur. Seçmek için aynı seçeneğe bir kez daha dokun. Klavyede seçeneğe gelince okunur, Enter seçer.</p>
+</details>
+<div class="nav"><button data-a="home">🏠 Başa dön</button></div>
+
+<div id="live" role="status" aria-live="polite"></div>
+<main id="app"></main>
+<script>const $=s=>document.querySelector(s),live=$('#live');
+const tts='speechSynthesis' in window&&'SpeechSynthesisUtterance' in window;
+const DEF={tv:1,nr:0,rt:1,th:0,fs:18,lh:1.5},AX=Object.assign({},DEF);
+try{Object.assign(AX,JSON.parse(localStorage.getItem('afetErisim')||'{}'))}catch(e){}
+const sv=()=>{try{localStorage.setItem('afetErisim',JSON.stringify(AX))}catch(e){}};
+const RT=[['Yavaş',.7],['Normal',.9],['Hızlı',1.1]],TH=['Standart','Siyah zemin · sarı yazı','Siyah zemin · beyaz yazı'];
+let voice=null,armed=null,kb=false;
+const clean=t=>t.replace(/[\p{Extended_Pictographic}\u200d\ufe0f✓✔▶▲▼↻◐]/gu,' ').replace(/\s+/g,' ').trim();
+function pickV(){const v=speechSynthesis.getVoices();voice=v.find(x=>/^tr/i.test(x.lang))||null;$('#vn').textContent=v.length&&!voice?'Bu cihazda Türkçe ses bulunamadı. Yazıları ekrandan okuyabilirsin.':''}
+function say(t,force){if(!tts||(!AX.tv&&!force))return;t=clean(t);if(!t)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='tr-TR';if(voice)u.voice=voice;u.rate=RT[AX.rt][1];speechSynthesis.speak(u)}
+function fb(t,c){live.textContent=t;live.className=c||'';if(!t)return;void live.offsetWidth;live.classList.add('fl');say(t);if(navigator.vibrate)navigator.vibrate(c=='bad'?[120,70,120]:70)}
+function ap(){const r=document.documentElement.style;r.setProperty('--fs',AX.fs+'px');r.setProperty('--lh',AX.lh);
+document.body.className=['','hy','hw'][AX.th]+(AX.fs>=26?' xl':'');
+const t=(k,v)=>{$(`[data-x=${k}]`).textContent=v};
+t('tv','🔊 Sesli okuma: '+(AX.tv?'Açık':'Kapalı'));t('nr','🗣️ Seçenek seslendirme: '+(AX.nr?'Açık':'Kapalı'));
+t('rt','⏱ Konuşma hızı: '+RT[AX.rt][0]);t('th','🎨 Renk teması: '+TH[AX.th]);
+$('[data-x=tv]').setAttribute('aria-pressed',!!AX.tv);$('[data-x=nr]').setAttribute('aria-pressed',!!AX.nr);
+$('#rf').value=AX.fs;$('#rl').value=AX.lh;$('#fv').textContent=AX.fs+' punto';$('#lv').textContent=AX.lh}
+$('.tb').addEventListener('click',e=>{const b=e.target.closest('[data-x]');if(!b)return;const k=b.dataset.x;
+if(k=='tv'||k=='nr')AX[k]=+!AX[k];if(k=='rt')AX.rt=(AX.rt+1)%3;if(k=='th')AX.th=(AX.th+1)%3;if(k=='rs')Object.assign(AX,DEF);
+ap();sv();if(tts)say(b.textContent,true)});
+$('#rf').oninput=e=>{AX.fs=+e.target.value;ap();sv()};
+$('#rl').oninput=e=>{AX.lh=+e.target.value;ap();sv()};
+if(tts){pickV();speechSynthesis.onvoiceschanged=pickV}else{['tv','nr','rt'].forEach(k=>$(`[data-x=${k}]`).hidden=true);$('#vn').textContent='Bu tarayıcı sesli okumayı desteklemiyor. Yazıları ekrandan okuyabilirsin.'}
+const lab=b=>clean([b.getAttribute('aria-label')||'',...[...b.querySelectorAll('[aria-label]')].map(x=>x.getAttribute('aria-label')),b.textContent].join(' '));
+document.addEventListener('keydown',()=>kb=true,true);
+document.addEventListener('pointerdown',()=>kb=false,true);
+document.addEventListener('focusin',e=>{const b=e.target.closest&&e.target.closest('#app [data-a]');if(AX.nr&&kb&&b)say(lab(b),true)});
+document.addEventListener('click',e=>{const b=e.target.closest('#app [data-a]');if(!AX.nr||!b||b.disabled||e.detail===0)return;
+if(armed===b){armed=null;b.classList.remove('arm');return}
+document.querySelectorAll('.arm').forEach(x=>x.classList.remove('arm'));armed=b;b.classList.add('arm');e.stopPropagation();
+say(lab(b),true);live.textContent='Seçmek için aynı seçeneğe bir kez daha dokun.';live.className=''},true);
+ap();
+</script>
+<script>
+const D=[
+{id:'deprem',e:'🏚️',a:'yıkılmış bina',n:'Deprem',g:'yer',t:'Yerin altındaki kayaların kırılmasıyla yerin sallanmasıdır.',f:'Sallanırken Çök-Kapan-Tutun yap. Sallantı bitince sakin ol ve toplanma alanına git.'},
+{id:'sel',e:'🏠💧',a:'suyla dolan ev',n:'Sel',g:'su',t:'Çok yağmur yağınca derelerin taşıp suyun karaya yayılmasıdır.',f:'Yüksek bir yere çık. Sel suyunun içinde yürüme.'},
+{id:'yangin',e:'🔥🌲',a:'yanan ağaç',n:'Orman Yangını',g:'hv',t:'Ormandaki ağaçların ve bitkilerin kontrolsüzce yanmasıdır.',f:'Ormanda ateş yakma. Yangın görürsen hemen uzaklaş ve yetişkinlere haber ver.'},
+{id:'heyelan',e:'⛰️',a:'yamaçtan kayan toprak',n:'Heyelan',g:'yer',t:'Yamaçtaki toprak ve kayaların aşağı doğru kaymasıdır.',f:'Kayan toprağın yolundan uzaklaş ve yetişkinlere haber ver.'},
+{id:'hortum',e:'🌪️',a:'hortum',n:'Hortum',g:'hv',t:'Havanın dönerek yere uzanan hızlı bir huni oluşturmasıdır.',f:'Sağlam bir binanın içine gir ve pencerelerden uzak dur.'},
+{id:'tsunami',e:'🌊',a:'dev dalga',n:'Tsunami',g:'su',t:'Deniz altındaki depremlerle oluşan dev dalgalardır.',f:'Deniz kıyısından uzaklaşıp yüksek bir yere çık.'}];
+const G={yer:['⛰️','Yerle ilgili'],su:['💧','Suyla ilgili'],hv:['🔥','Hava ve ateşle ilgili']};
+const LV={1:{n:'Seviye 1 · Başlangıç',d:'3 afet, büyük resimler',k:['deprem','sel','yangin'],S:['learn','match']},
+2:{n:'Seviye 2 · Orta',d:'6 afet, eşleştirme ve gruplama',k:D.map(x=>x.id),S:['learn','match','sort']},
+3:{n:'Seviye 3 · İleri',d:'6 afet, tanımlar ve bilgi yarışması',k:D.map(x=>x.id),S:['learn','match','sort','quiz']}};
+const app=$('#app');
+const sh=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const gd=id=>D.find(d=>d.id===id);
+const img=d=>`<span class="em" role="img" aria-label="${d.a}">${d.e}</span>`;
+let L=1,S=[],si=0,err=0,items=[],q=[],qi=0,ms={},seen=new Set();
+function view(t,b){app.innerHTML=`<p>Seviye ${L} · Adım ${si+1}/${S.length}</p><h2 id="h" tabindex="-1">${t}</h2>${b}`;fb('');$('#h').focus();window.scrollTo(0,0)}
+function nextBtn(last){app.insertAdjacentHTML('beforeend',`<button class="pri" id="nx" data-a="${last?'next':'sn'}">${last?'Devam et ▶':'Sonraki ▶'}</button>`);$('#nx').focus()}
+function home(){if(tts)speechSynthesis.cancel();app.innerHTML=`<h2 id="h" tabindex="-1">Hangi seviyeden başlayalım?</h2><div class="g">${[1,2,3].map(l=>`<button class="card pri" data-a="start" data-l="${l}"><b>${LV[l].n}</b><span>${LV[l].d}</span></button>`).join('')}</div>`;fb('');$('#h').focus()}
+function go(){({learn,match,sort,quiz})[S[si]]()}
+function learn(){seen=new Set();view('Kartlara dokun ve afetleri tanı',`<div class="g">${items.map(d=>`<button class="card" data-a="open" data-id="${d.id}">${img(d)}<b>${d.n}</b><span id="k-${d.id}"></span></button>`).join('')}</div><div id="det" class="det" aria-live="polite">Bir karta dokununca bilgisi burada görünür.</div><button class="pri" id="nx" data-a="next" disabled>Devam et ▶</button>`)}
+function match(){ms={l:null,n:0};const tx=L==3;view('Eşini bul',`<p>${tx?'Soldan bir tanım, sağdan afetin adını seç.':'Soldan bir resim, sağdan adını seç.'}</p><div class="cols"><div id="ml">${sh(items).map(d=>`<button data-a="ml" data-id="${d.id}">${tx?d.t:img(d)}</button>`).join('')}</div><div id="mr">${sh(items).map(d=>`<button data-a="mr" data-id="${d.id}"><b>${d.n}</b></button>`).join('')}</div></div>`)}
+function sort(){q=sh(items);qi=0;sq()}
+function sq(){const d=q[qi];view(`Hangi gruba girer? (${qi+1}/${q.length})`,`<div class="big det">${img(d)}<h3>${d.n}</h3></div><div class="g">${Object.keys(G).map(k=>`<button class="card" data-a="pk" data-k="${k}"><span class="em" aria-hidden="true">${G[k][0]}</span><b>${G[k][1]}</b></button>`).join('')}</div>`);say(d.n+'. Hangi gruba girer?')}
+function quiz(){q=sh(items);qi=0;qq()}
+function qq(){const d=q[qi],o=sh([d,...sh(items.filter(x=>x!=d)).slice(0,3)]);view(`Bilgi yarışması (${qi+1}/${q.length})`,`<div class="det"><p><b>Bu hangi afetin tanımı?</b></p><p>${d.t}</p><button data-a="rd" data-id="${d.id}">🔊 Dinle</button></div><div class="g">${o.map(x=>`<button class="card" data-a="an" data-id="${x.id}">${img(x)}<b>${x.n}</b></button>`).join('')}</div>`);say('Bu hangi afetin tanımı? '+d.t)}
+function good(m){document.querySelectorAll('.g button').forEach(x=>x.disabled=true);qi++;fb(m,'ok');nextBtn(qi==q.length)}
+function end(){const s=err<=1?3:err<=4?2:1;if(tts)speechSynthesis.cancel();app.innerHTML=`<h2 id="h" tabindex="-1">Tebrikler, afet bilgini gösterdin!</h2><div class="det big"><div class="st" role="img" aria-label="${s} yıldız">${'⭐'.repeat(s)}${'☆'.repeat(3-s)}</div><p>${err} yanlış deneme yaptın. ${s==3?'Harika bir bilgi ustasısın!':s==2?'Çok iyi! Bir kez daha oynarsan 3 yıldız alabilirsin.':'İyi başladın! Kartları tekrar okuyup yeniden dene.'}</p></div><button class="pri" data-a="start" data-l="${L}">↻ Yeniden oyna</button> <button data-a="home">Seviye seç</button>`;fb('');$('#h').focus();say(`Tebrikler! ${s} yıldız kazandın.`)}
+const A={
+home,
+start:b=>{L=+b.dataset.l;items=LV[L].k.map(gd);S=LV[L].S;si=0;err=0;go()},
+next:()=>{si++;si<S.length?go():end()},
+open:b=>{const d=gd(b.dataset.id);seen.add(d.id);$('#k-'+d.id).textContent='✓ okudum';$('#det').innerHTML=`<h3>${d.e} ${d.n}</h3><p><b>Nedir?</b> ${d.t}</p><p><b>Ne yapmalıyız?</b> ${d.f}</p><button data-a="say" data-id="${d.id}">🔊 Tekrar dinle</button>`;say(`${d.n}. ${d.t} ${d.f}`);if(seen.size==items.length){$('#nx').disabled=false;live.textContent='Tüm kartları okudun. Devam edebilirsin.';live.className='ok'}},
+say:b=>{const d=gd(b.dataset.id);say(`${d.n}. ${d.t} ${d.f}`,true)},
+ml:b=>{ms.l=b.dataset.id;document.querySelectorAll('#ml button').forEach(x=>x.classList.toggle('on',x==b));if(L==3)say(b.textContent)},
+mr:b=>{if(!ms.l){fb('Önce soldan bir kart seç.','bad');return}const id=b.dataset.id;
+if(id==ms.l){document.querySelectorAll(`[data-id="${id}"]`).forEach(x=>{x.disabled=true;x.className='dn'});ms.l=null;ms.n++;
+if(ms.n==items.length){fb('Doğru! Hepsini eşleştirdin.','ok');nextBtn(true)}else fb('Doğru! '+gd(id).n+'.','ok')}
+else{err++;fb('Bu eşleşmedi. Bir daha dene.','bad')}},
+pk:b=>{const d=q[qi];if(b.dataset.k==d.g)good(`Doğru! ${d.n}, ${G[d.g][1].toLocaleLowerCase('tr')} bir afettir.`);else{err++;b.disabled=true;fb(`Henüz değil. Şu tanıma bak: ${d.t}`,'bad')}},
+sn:()=>S[si]=='sort'?sq():qq(),
+rd:b=>say('Bu hangi afetin tanımı? '+gd(b.dataset.id).t,true),
+an:b=>{const d=q[qi];if(b.dataset.id==d.id)good(`Doğru! Bu tanım ${d.n} için.`);else{err++;b.disabled=true;fb('Yanlış seçim. Tanımı tekrar oku.','bad')}}};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(b&&!b.disabled)A[b.dataset.a](b)});
+home();
+</script>
+</body>
+</html>
